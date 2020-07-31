@@ -1,6 +1,111 @@
 "use strict";
 
 const TASK_COUNT = 3;
+const FILTER_ARRAY = [
+  {
+    name: `all`,
+    text: `All`,
+    value: 13,
+    state: `checked`
+  },
+  {
+    name: `overdue`,
+    text: `Overdue`,
+    value: 0
+  },
+  {
+    name: `today`,
+    text: `Today`,
+    value: 0
+  },
+  {
+    name: `favorites`,
+    text: `Favorites`,
+    value: 1
+  },
+  {
+    name: `repeating`,
+    text: `Repeating`,
+    value: 1
+  },
+  {
+    name: `archive`,
+    text: `Archive`,
+    value: 115
+  }
+];
+const BUTTON_ARRAY = [
+  {
+    name: `edit`
+  },
+  {
+    name: `archive`
+  },
+  {
+    name: `favorites`,
+    disabled: true
+  }
+];
+const DAY_ARRAY = [
+  {
+    id: `repeat-mo-4`,
+    value: `mo`
+  },
+  {
+    id: `repeat-tu-4`,
+    value: `tu`,
+    state: `checked`
+  },
+  {
+    id: `repeat-we-4`,
+    value: `we`
+  },
+  {
+    id: `repeat-th-4`,
+    value: `th`
+  },
+  {
+    id: `repeat-th-4`,
+    value: `th`
+  },
+  {
+    id: `repeat-fr-4`,
+    value: `fr`,
+    state: `checked`
+  },
+  {
+    id: `repeat-sa-4`,
+    value: `sa`
+  },
+  {
+    id: `repeat-su-4`,
+    value: `su`,
+    state: `checked`
+  }
+];
+const COLOR_ARRAY = [
+  {
+    id: `color-black-4`,
+    value: `black`
+  },
+  {
+    id: `color-yellow-4`,
+    value: `yellow`,
+    state: `checked`
+  },
+  {
+    id: `color-blue-4`,
+    value: `blue`
+  },
+  {
+    id: `color-green-4`,
+    value: `green`
+  },
+  {
+    id: `color-pink-4`,
+    value: `pink`
+  }
+];
 
 const createSiteMenuTemplate = () => {
   return (
@@ -35,66 +140,28 @@ const createSiteMenuTemplate = () => {
   );
 };
 
-const createFilterTemplate = () => {
+const createFilterItem = (name, text, count, state = '') => {
+  return name ?
+  (
+    `<input
+      type="radio"
+      id="filter__${name}"
+      class="filter__input visually-hidden"
+      name="filter"
+      ${count === 0 ? 'disabled' : state}
+    />
+    <label for="filter__${name}" class="filter__label">
+    ${text} <span class="filter__${name}-count">${count}</span></label>`
+  ) : ``;
+}
+
+const createFilterTemplate = (filters) => {
+  filters = filters.reduce((accumulator, currentValue) => {
+    return accumulator + createFilterItem(...Object.values(currentValue))
+  }, ``);
   return (
     `<section class="main__filter filter container">
-      <input
-        type="radio"
-        id="filter__all"
-        class="filter__input visually-hidden"
-        name="filter"
-        checked
-      />
-      <label for="filter__all" class="filter__label">
-        All <span class="filter__all-count">13</span></label
-      >
-      <input
-        type="radio"
-        id="filter__overdue"
-        class="filter__input visually-hidden"
-        name="filter"
-        disabled
-      />
-      <label for="filter__overdue" class="filter__label"
-        >Overdue <span class="filter__overdue-count">0</span></label
-      >
-      <input
-        type="radio"
-        id="filter__today"
-        class="filter__input visually-hidden"
-        name="filter"
-        disabled
-      />
-      <label for="filter__today" class="filter__label"
-        >Today <span class="filter__today-count">0</span></label
-      >
-      <input
-        type="radio"
-        id="filter__favorites"
-        class="filter__input visually-hidden"
-        name="filter"
-      />
-      <label for="filter__favorites" class="filter__label"
-        >Favorites <span class="filter__favorites-count">1</span></label
-      >
-      <input
-        type="radio"
-        id="filter__repeating"
-        class="filter__input visually-hidden"
-        name="filter"
-      />
-      <label for="filter__repeating" class="filter__label"
-        >Repeating <span class="filter__repeating-count">1</span></label
-      >
-      <input
-        type="radio"
-        id="filter__archive"
-        class="filter__input visually-hidden"
-        name="filter"
-      />
-      <label for="filter__archive" class="filter__label"
-        >Archive <span class="filter__archive-count">115</span></label
-      >
+      ${filters}
     </section>`
   );
 };
@@ -118,24 +185,24 @@ const createSortingTemplate = () => {
   );
 };
 
-const createTaskTemplate = () => {
+const createTaskButton = (name, disabled = false) => {
+  return (
+    `<button type="button" class="card__btn card__btn--${name} ${disabled ? 'card__btn--disabled' : '' }">
+      ${name}
+    </button>`
+  );
+}
+
+const createTaskTemplate = (buttons) => {
+  buttons = buttons.reduce((accumulator, currentValue) => {
+    return accumulator + createTaskButton(...Object.values(currentValue))
+  }, ``);
   return (
     `<article class="card card--black">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
-            <button type="button" class="card__btn card__btn--edit">
-              edit
-            </button>
-            <button type="button" class="card__btn card__btn--archive">
-              archive
-            </button>
-            <button
-              type="button"
-              class="card__btn card__btn--favorites"
-            >
-              favorites
-            </button>
+            ${buttons}
           </div>
           <div class="card__color-bar">
             <svg class="card__color-bar-wave" width="100%" height="10">
@@ -162,7 +229,59 @@ const createTaskTemplate = () => {
   );
 };
 
-const createTaskEditTemplate = () => {
+const createTaskEditToggleButton = (name, text = name) => {
+  return (
+    `<button class="card__${name}-toggle" type="button">
+      ${text}: <span class="card__${text}-status">yes</span>
+    </button>`
+  );
+}
+
+const createTaskEditDayButton = (id,  value, state = ``) => {
+  return (
+    `<input
+      class="visually-hidden card__repeat-day-input"
+      type="checkbox"
+      id="${id}"
+      name="repeat"
+      value="${value}"
+      ${state}
+    />
+    <label class="card__repeat-day" for="${id}"
+      >${value}</label>`
+  );
+}
+
+const createTaskEditColorButton = (id,  value, state = ``) => {
+  return (
+    `<input
+      type="radio"
+      id="${id}"
+      class="card__color-input card__color-input--black visually-hidden"
+      name="color"
+      value="${value}"
+      ${state}
+    />
+    <label
+      for="${id}"
+      class="card__color card__color--${value}"
+      >
+      ${value}
+    </label>`
+  );
+}
+
+const createTaskEditTemplate = (days, colors) => {
+
+const dayToggle = createTaskEditToggleButton(`date-deadline`, `date`);
+const repeatToggle = createTaskEditToggleButton(`repeat`);
+days = days.reduce((accumulator, currentValue) => {
+  return accumulator + createTaskEditDayButton(...Object.values(currentValue))
+}, ``);
+colors = colors.reduce((accumulator, currentValue) => {
+  return accumulator + createTaskEditDayButton(...Object.values(currentValue))
+}, ``);
+
   return (
     `<article class="card card--edit card--yellow card--repeat">
       <form class="card__form" method="get">
@@ -184,9 +303,7 @@ const createTaskEditTemplate = () => {
           <div class="card__settings">
             <div class="card__details">
               <div class="card__dates">
-                <button class="card__date-deadline-toggle" type="button">
-                  date: <span class="card__date-status">yes</span>
-                </button>
+                ${dayToggle}
                 <fieldset class="card__date-deadline">
                   <label class="card__input-deadline-wrap">
                     <input
@@ -198,84 +315,10 @@ const createTaskEditTemplate = () => {
                     />
                   </label>
                 </fieldset>
-                <button class="card__repeat-toggle" type="button">
-                  repeat:<span class="card__repeat-status">yes</span>
-                </button>
+                ${repeatToggle}
                 <fieldset class="card__repeat-days">
                   <div class="card__repeat-days-inner">
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-mo-4"
-                      name="repeat"
-                      value="mo"
-                    />
-                    <label class="card__repeat-day" for="repeat-mo-4"
-                      >mo</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-tu-4"
-                      name="repeat"
-                      value="tu"
-                      checked
-                    />
-                    <label class="card__repeat-day" for="repeat-tu-4"
-                      >tu</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-we-4"
-                      name="repeat"
-                      value="we"
-                    />
-                    <label class="card__repeat-day" for="repeat-we-4"
-                      >we</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-th-4"
-                      name="repeat"
-                      value="th"
-                    />
-                    <label class="card__repeat-day" for="repeat-th-4"
-                      >th</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-fr-4"
-                      name="repeat"
-                      value="fr"
-                      checked
-                    />
-                    <label class="card__repeat-day" for="repeat-fr-4"
-                      >fr</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      name="repeat"
-                      value="sa"
-                      id="repeat-sa-4"
-                    />
-                    <label class="card__repeat-day" for="repeat-sa-4"
-                      >sa</label
-                    >
-                    <input
-                      class="visually-hidden card__repeat-day-input"
-                      type="checkbox"
-                      id="repeat-su-4"
-                      name="repeat"
-                      value="su"
-                      checked
-                    />
-                    <label class="card__repeat-day" for="repeat-su-4"
-                      >su</label
-                    >
+                    ${days}
                   </div>
                 </fieldset>
               </div>
@@ -283,67 +326,7 @@ const createTaskEditTemplate = () => {
             <div class="card__colors-inner">
               <h3 class="card__colors-title">Color</h3>
               <div class="card__colors-wrap">
-                <input
-                  type="radio"
-                  id="color-black-4"
-                  class="card__color-input card__color-input--black visually-hidden"
-                  name="color"
-                  value="black"
-                />
-                <label
-                  for="color-black-4"
-                  class="card__color card__color--black"
-                  >black</label
-                >
-                <input
-                  type="radio"
-                  id="color-yellow-4"
-                  class="card__color-input card__color-input--yellow visually-hidden"
-                  name="color"
-                  value="yellow"
-                  checked
-                />
-                <label
-                  for="color-yellow-4"
-                  class="card__color card__color--yellow"
-                  >yellow</label
-                >
-                <input
-                  type="radio"
-                  id="color-blue-4"
-                  class="card__color-input card__color-input--blue visually-hidden"
-                  name="color"
-                  value="blue"
-                />
-                <label
-                  for="color-blue-4"
-                  class="card__color card__color--blue"
-                  >blue</label
-                >
-                <input
-                  type="radio"
-                  id="color-green-4"
-                  class="card__color-input card__color-input--green visually-hidden"
-                  name="color"
-                  value="green"
-                />
-                <label
-                  for="color-green-4"
-                  class="card__color card__color--green"
-                  >green</label
-                >
-                <input
-                  type="radio"
-                  id="color-pink-4"
-                  class="card__color-input card__color-input--pink visually-hidden"
-                  name="color"
-                  value="pink"
-                />
-                <label
-                  for="color-pink-4"
-                  class="card__color card__color--pink"
-                  >pink</label
-                >
+               ${colors}
               </div>
             </div>
           </div>
@@ -371,17 +354,17 @@ const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
 render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
-render(siteMainElement, createFilterTemplate(), `beforeend`);
+render(siteMainElement, createFilterTemplate(FILTER_ARRAY), `beforeend`);
 render(siteMainElement, createBoardTaskTemplate(), `beforeend`);
 
 const boardElement = siteMainElement.querySelector(`.board`);
 render(boardElement, createSortingTemplate(), `afterbegin`);
 
 const taskListElement = boardElement.querySelector(`.board__tasks`);
-render(taskListElement, createTaskEditTemplate(), `beforeend`);
+render(taskListElement, createTaskEditTemplate(DAY_ARRAY, COLOR_ARRAY), `beforeend`);
 
 for (let i = 0; i < TASK_COUNT; i++) {
-  render(taskListElement, createTaskTemplate(), `beforeend`);
+  render(taskListElement, createTaskTemplate(BUTTON_ARRAY), `beforeend`);
 }
 
 render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
