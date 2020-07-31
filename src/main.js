@@ -65,10 +65,6 @@ const DAY_ARRAY = [
     value: `th`
   },
   {
-    id: `repeat-th-4`,
-    value: `th`
-  },
-  {
     id: `repeat-fr-4`,
     value: `fr`,
     state: `checked`
@@ -106,6 +102,12 @@ const COLOR_ARRAY = [
     value: `pink`
   }
 ];
+
+const makeTemplateFromArray = (array, func) => {
+  return array?.reduce((accumulator, currentValue) => {
+    return accumulator + func(...Object.values(currentValue))
+  }, ``) || ``;
+}
 
 const createSiteMenuTemplate = () => {
   return (
@@ -156,9 +158,7 @@ const createFilterItem = (name, text, count, state = '') => {
 }
 
 const createFilterTemplate = (filters) => {
-  filters = filters.reduce((accumulator, currentValue) => {
-    return accumulator + createFilterItem(...Object.values(currentValue))
-  }, ``);
+  filters = makeTemplateFromArray(filters, createFilterItem);
   return (
     `<section class="main__filter filter container">
       ${filters}
@@ -194,9 +194,7 @@ const createTaskButton = (name, disabled = false) => {
 }
 
 const createTaskTemplate = (buttons) => {
-  buttons = buttons.reduce((accumulator, currentValue) => {
-    return accumulator + createTaskButton(...Object.values(currentValue))
-  }, ``);
+  buttons = makeTemplateFromArray(buttons, createTaskButton);
   return (
     `<article class="card card--black">
       <div class="card__form">
@@ -257,7 +255,7 @@ const createTaskEditColorButton = (id,  value, state = ``) => {
     `<input
       type="radio"
       id="${id}"
-      class="card__color-input card__color-input--black visually-hidden"
+      class="card__color-input card__color-input--${value} visually-hidden"
       name="color"
       value="${value}"
       ${state}
@@ -265,9 +263,7 @@ const createTaskEditColorButton = (id,  value, state = ``) => {
     <label
       for="${id}"
       class="card__color card__color--${value}"
-      >
-      ${value}
-    </label>`
+      >${value}</label>`
   );
 }
 
@@ -275,12 +271,8 @@ const createTaskEditTemplate = (days, colors) => {
 
 const dayToggle = createTaskEditToggleButton(`date-deadline`, `date`);
 const repeatToggle = createTaskEditToggleButton(`repeat`);
-days = days.reduce((accumulator, currentValue) => {
-  return accumulator + createTaskEditDayButton(...Object.values(currentValue))
-}, ``);
-colors = colors.reduce((accumulator, currentValue) => {
-  return accumulator + createTaskEditDayButton(...Object.values(currentValue))
-}, ``);
+days = makeTemplateFromArray(days, createTaskEditDayButton);
+colors = makeTemplateFromArray(colors, createTaskEditColorButton);
 
   return (
     `<article class="card card--edit card--yellow card--repeat">
