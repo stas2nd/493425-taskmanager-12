@@ -105,7 +105,7 @@ const COLOR_ARRAY = [
 
 const makeTemplateFromArray = (array, func) => {
   return array?.reduce((accumulator, currentValue) => {
-    return accumulator + func(...Object.values(currentValue))
+    return accumulator + func(currentValue)
   }, ``) || ``;
 }
 
@@ -142,7 +142,7 @@ const createSiteMenuTemplate = () => {
   );
 };
 
-const createFilterItem = (name, text, count, state = '') => {
+const createFilterItem = ({name, text, count, state = ''}) => {
   return name ?
   (
     `<input
@@ -185,7 +185,7 @@ const createSortingTemplate = () => {
   );
 };
 
-const createTaskButton = (name, disabled = false) => {
+const createTaskButton = ({name, disabled = false}) => {
   return (
     `<button type="button" class="card__btn card__btn--${name} ${disabled ? 'card__btn--disabled' : '' }">
       ${name}
@@ -227,7 +227,7 @@ const createTaskTemplate = (buttons) => {
   );
 };
 
-const createTaskEditToggleButton = (name, text = name) => {
+const createTaskEditToggleButton = ({name, text = name}) => {
   return (
     `<button class="card__${name}-toggle" type="button">
       ${text}: <span class="card__${text}-status">yes</span>
@@ -235,7 +235,7 @@ const createTaskEditToggleButton = (name, text = name) => {
   );
 }
 
-const createTaskEditDayButton = (id,  value, state = ``) => {
+const createTaskEditDayButton = ({id, value, state = ``}) => {
   return (
     `<input
       class="visually-hidden card__repeat-day-input"
@@ -250,7 +250,7 @@ const createTaskEditDayButton = (id,  value, state = ``) => {
   );
 }
 
-const createTaskEditColorButton = (id,  value, state = ``) => {
+const createTaskEditColorButton = ({id, value, state = ``}) => {
   return (
     `<input
       type="radio"
@@ -269,8 +269,8 @@ const createTaskEditColorButton = (id,  value, state = ``) => {
 
 const createTaskEditTemplate = (days, colors) => {
 
-const dayToggle = createTaskEditToggleButton(`date-deadline`, `date`);
-const repeatToggle = createTaskEditToggleButton(`repeat`);
+const dayToggle = createTaskEditToggleButton({name: `date-deadline`, text: `date`});
+const repeatToggle = createTaskEditToggleButton({name: `repeat`});
 days = makeTemplateFromArray(days, createTaskEditDayButton);
 colors = makeTemplateFromArray(colors, createTaskEditColorButton);
 
