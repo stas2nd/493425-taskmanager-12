@@ -105,9 +105,9 @@ const COLOR_ARRAY = [
 
 const makeTemplateFromArray = (array, func) => {
   return array ? array.reduce((accumulator, currentValue) => {
-    return accumulator + func(currentValue)
+    return accumulator + func(currentValue);
   }, ``) : ``;
-}
+};
 
 const createSiteMenuTemplate = () => {
   return (
@@ -142,20 +142,20 @@ const createSiteMenuTemplate = () => {
   );
 };
 
-const createFilterItem = ({name, text, count, state = ''}) => {
+const createFilterItem = ({name, text, count, state = ``}) => {
   return name ?
-  (
-    `<input
-      type="radio"
-      id="filter__${name}"
-      class="filter__input visually-hidden"
-      name="filter"
-      ${count === 0 ? 'disabled' : state}
-    />
-    <label for="filter__${name}" class="filter__label">
-    ${text} <span class="filter__${name}-count">${count}</span></label>`
-  ) : ``;
-}
+    (
+      `<input
+        type="radio"
+        id="filter__${name}"
+        class="filter__input visually-hidden"
+        name="filter"
+        ${count === 0 ? `disabled` : state}
+      />
+      <label for="filter__${name}" class="filter__label">
+      ${text} <span class="filter__${name}-count">${count}</span></label>`
+    ) : ``;
+};
 
 const createFilterTemplate = (filters) => {
   filters = makeTemplateFromArray(filters, createFilterItem);
@@ -187,11 +187,11 @@ const createSortingTemplate = () => {
 
 const createTaskButton = ({name, disabled = false}) => {
   return (
-    `<button type="button" class="card__btn card__btn--${name} ${disabled ? 'card__btn--disabled' : '' }">
+    `<button type="button" class="card__btn card__btn--${name} ${disabled ? `card__btn--disabled` : `` }">
       ${name}
     </button>`
   );
-}
+};
 
 const createTaskTemplate = (buttons) => {
   buttons = makeTemplateFromArray(buttons, createTaskButton);
@@ -233,7 +233,7 @@ const createTaskEditToggleButton = ({name, text = name}) => {
       ${text}: <span class="card__${text}-status">yes</span>
     </button>`
   );
-}
+};
 
 const createTaskEditDayButton = ({id, value, state = ``}) => {
   return (
@@ -248,7 +248,7 @@ const createTaskEditDayButton = ({id, value, state = ``}) => {
     <label class="card__repeat-day" for="${id}"
       >${value}</label>`
   );
-}
+};
 
 const createTaskEditColorButton = ({id, value, state = ``}) => {
   return (
@@ -265,14 +265,14 @@ const createTaskEditColorButton = ({id, value, state = ``}) => {
       class="card__color card__color--${value}"
       >${value}</label>`
   );
-}
+};
 
 const createTaskEditTemplate = (days, colors) => {
 
-const dayToggle = createTaskEditToggleButton({name: `date-deadline`, text: `date`});
-const repeatToggle = createTaskEditToggleButton({name: `repeat`});
-days = makeTemplateFromArray(days, createTaskEditDayButton);
-colors = makeTemplateFromArray(colors, createTaskEditColorButton);
+  const dayToggle = createTaskEditToggleButton({name: `date-deadline`, text: `date`});
+  const repeatToggle = createTaskEditToggleButton({name: `repeat`});
+  days = makeTemplateFromArray(days, createTaskEditDayButton);
+  colors = makeTemplateFromArray(colors, createTaskEditColorButton);
 
   return (
     `<article class="card card--edit card--yellow card--repeat">
