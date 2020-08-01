@@ -104,9 +104,9 @@ const COLOR_ARRAY = [
 ];
 
 const makeTemplateFromArray = (array, func) => {
-  return array?.reduce((accumulator, currentValue) => {
+  return array ? array.reduce((accumulator, currentValue) => {
     return accumulator + func(currentValue)
-  }, ``) || ``;
+  }, ``) : ``;
 }
 
 const createSiteMenuTemplate = () => {
