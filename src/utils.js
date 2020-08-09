@@ -18,10 +18,7 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const getRandomColor = () => {
-  const colors = [`black`, `yellow`, `blue`, `green`, `pink`];
-  const randomIndex = getRandomInteger(0, COLORS.length - 1);
-
-  return colors[randomIndex];
+  return COLORS[getRandomInteger(0, COLORS.length - 1)];
 };
 
 const getCurrentDate = () => {
