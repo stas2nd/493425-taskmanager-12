@@ -10,3 +10,8 @@ export const NO_REPEATING = {
   sa: false,
   su: false
 };
+export const DESCRIPTIONS = [
+  `Изучить теорию`,
+  `Сделать домашку`,
+  `Пройти интенсив на соточку`
+];

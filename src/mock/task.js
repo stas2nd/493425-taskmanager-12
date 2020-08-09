@@ -1,23 +1,13 @@
-import {NO_REPEATING} from "../const.js";
+import {DESCRIPTIONS, NO_REPEATING} from "../const.js";
 import {getRandomInteger} from "../utils.js";
 import {getRandomColor} from "../utils.js";
 
 const generateDescription = () => {
-  const descriptions = [
-    `Изучить теорию`,
-    `Сделать домашку`,
-    `Пройти интенсив на соточку`
-  ];
-
-  const randomIndex = getRandomInteger(0, descriptions.length - 1);
-
-  return descriptions[randomIndex];
+  return DESCRIPTIONS[getRandomInteger(0, DESCRIPTIONS.length - 1)];
 };
 
 const generateDate = () => {
-  const isDate = !!getRandomInteger(0, 1);
-
-  if (!isDate) {
+  if (!getRandomInteger(0, 1)) {
     return null;
   }
 
@@ -29,7 +19,7 @@ const generateDate = () => {
 
   currentDate.setDate(currentDate.getDate() + daysGap);
 
-  return new Date(currentDate);
+  return currentDate;
 };
 
 const generateRepeating = () => {
