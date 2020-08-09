@@ -1,3 +1,4 @@
+import {NO_REPEATING} from "../const.js";
 import {getRandomInteger} from "../utils.js";
 import {getRandomColor} from "../utils.js";
 
@@ -14,7 +15,7 @@ const generateDescription = () => {
 };
 
 const generateDate = () => {
-  const isDate = Boolean(getRandomInteger(0, 1));
+  const isDate = !!getRandomInteger(0, 1);
 
   if (!isDate) {
     return null;
@@ -35,9 +36,9 @@ const generateRepeating = () => {
   return {
     mo: false,
     tu: false,
-    we: Boolean(getRandomInteger(0, 1)),
+    we: !!getRandomInteger(0, 1),
     th: false,
-    fr: Boolean(getRandomInteger(0, 1)),
+    fr: !!getRandomInteger(0, 1),
     sa: false,
     su: false
   };
@@ -47,22 +48,14 @@ export const generateTask = () => {
   const dueDate = generateDate();
   const repeating = dueDate === null
     ? generateRepeating()
-    : {
-      mo: false,
-      tu: false,
-      we: false,
-      th: false,
-      fr: false,
-      sa: false,
-      su: false
-    };
+    : NO_REPEATING;
 
   return {
     description: generateDescription(),
     dueDate,
     repeating,
     color: getRandomColor(),
-    isArchive: Boolean(getRandomInteger(0, 1)),
-    isFavorite: Boolean(getRandomInteger(0, 1))
+    isArchive: !!getRandomInteger(0, 1),
+    isFavorite: !!getRandomInteger(0, 1)
   };
 };

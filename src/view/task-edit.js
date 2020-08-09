@@ -3,21 +3,14 @@ import {createTaskEditColorButton} from "./task-edit-color-button.js";
 import {createTaskEditDateTemplate} from "./task-edit-date.js";
 import {makeTemplateFromArray} from "../utils.js";
 import {isTaskExpired, isTaskRepeating} from "../utils.js";
+import {NO_REPEATING} from "../const.js";
 
 export const createTaskEditTemplate = (task = {}, colors) => {
   const {
     color = `black`,
     description = ``,
     dueDate = null,
-    repeating = {
-      mo: false,
-      tu: false,
-      we: false,
-      th: false,
-      fr: false,
-      sa: false,
-      su: false
-    }
+    repeating = NO_REPEATING
   } = task;
 
   const deadlineClassName = isTaskExpired(dueDate)

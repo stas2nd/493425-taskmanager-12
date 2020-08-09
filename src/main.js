@@ -1,4 +1,4 @@
-import {COLORS} from "./const.js";
+import {COLORS, TASK_COUNT,TASK_COUNT_PER_STEP} from "./const.js";
 import {render} from "./utils.js";
 import {createSiteMenuTemplate} from "./view/site-menu.js";
 import {createBoardTaskTemplate} from "./view/board-task.js";
@@ -8,12 +8,10 @@ import {createTaskTemplate} from "./view/task.js";
 import {createTaskEditTemplate} from "./view/task-edit.js";
 import {createLoadMoreButtonTemplate} from "./view/load-more-button.js";
 import {generateTask} from "./mock/task.js";
-import {generateFilter} from "./mock/filter.js";
+import {generateFilters} from "./mock/filters.js";
 
-const TASK_COUNT = 22;
-const TASK_COUNT_PER_STEP = 8;
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
-const filters = generateFilter(tasks);
+const filters = generateFilters(tasks);
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);

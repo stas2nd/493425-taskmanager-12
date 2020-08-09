@@ -32,23 +32,11 @@ const getCurrentDate = () => {
 };
 
 export const isTaskExpired = (dueDate) => {
-  if (dueDate === null) {
-    return false;
-  }
-
-  const currentDate = getCurrentDate();
-
-  return currentDate.getTime() > dueDate.getTime();
+  return dueDate && getCurrentDate().getTime() > dueDate.getTime();
 };
 
 export const isTaskExpiringToday = (dueDate) => {
-  if (dueDate === null) {
-    return false;
-  }
-
-  const currentDate = getCurrentDate();
-
-  return currentDate.getTime() === dueDate.getTime();
+  return dueDate && getCurrentDate().getTime() === dueDate.getTime();
 };
 
 export const isTaskRepeating = (repeating) => {
