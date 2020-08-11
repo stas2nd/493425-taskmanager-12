@@ -1,4 +1,6 @@
-export const createTaskEditColorButton = (color, rest) => {
+import {createElement} from "../utils.js";
+
+const createTaskEditColorButton = (color, rest) => {
   const cur = rest.find((v) => v.currentColor);
   return (
     `<input
@@ -15,3 +17,27 @@ export const createTaskEditColorButton = (color, rest) => {
       >${color}</label>`
   );
 };
+
+export default class TaskEditColorButton {
+  constructor(button, color) {
+    this._button = button;
+    this._color = color;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditColorButton(this._button, this._color);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,9 +1,9 @@
-import {createTaskButtons} from "./task-buttons.js";
-import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate} from "../utils.js";
+import TaskButtonsView from "./task-buttons.js";
+import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate, createElement} from "../utils.js";
 
-export const createTaskTemplate = (task, buttons) => {
+const createTaskTemplate = (task) => {
   const {color, description, dueDate, repeating, isArchive, isFavorite} = task;
-  buttons = createTaskButtons({isArchive, isFavorite});
+  const buttons = new TaskButtonsView({isArchive, isFavorite}).getTemplate();
 
   const date = dueDate !== null
     ? humanizeTaskDueDate(dueDate)
@@ -48,3 +48,27 @@ export const createTaskTemplate = (task, buttons) => {
     </article>`
   );
 };
+
+export default class Task {
+  constructor(task) {
+    this._task = task;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

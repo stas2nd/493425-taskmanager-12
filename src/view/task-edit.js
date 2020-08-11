@@ -1,17 +1,12 @@
-import {createTaskEditRepeatingTemplate} from "./task-edit-repeating.js";
-import {createTaskEditColorButton} from "./task-edit-color-button.js";
-import {createTaskEditDateTemplate} from "./task-edit-date.js";
-import {makeTemplateFromArray} from "../utils.js";
-import {isTaskExpired, isTaskRepeating} from "../utils.js";
-import {NO_REPEATING} from "../const.js";
+import TaskEditRepeatingView from "./task-edit-repeating.js";
+import TaskEditColorButtonView from "./task-edit-color-button.js";
+import TaskEditDateView from "./task-edit-date.js";
+import {makeTemplateFromArrayClass} from "../utils.js";
+import {isTaskExpired, isTaskRepeating, createElement} from "../utils.js";
+import {BLANK_TASK, COLORS} from "../const.js";
 
-export const createTaskEditTemplate = (task = {}, colors) => {
-  const {
-    color = `black`,
-    description = ``,
-    dueDate = null,
-    repeating = NO_REPEATING
-  } = task;
+const createTaskEditTemplate = (task) => {
+  const {color, description, dueDate, repeating} = task;
 
   const deadlineClassName = isTaskExpired(dueDate)
     ? `card--deadline`
@@ -21,9 +16,9 @@ export const createTaskEditTemplate = (task = {}, colors) => {
     ? `card--repeat`
     : ``;
 
-  const date = createTaskEditDateTemplate(dueDate);
-  const repeatingOption = createTaskEditRepeatingTemplate(repeating);
-  colors = makeTemplateFromArray(createTaskEditColorButton, colors, {currentColor: color});
+  const date = new TaskEditDateView(dueDate).getTemplate();
+  const repeatingOption = new TaskEditRepeatingView(repeating).getTemplate();
+  const colors = makeTemplateFromArrayClass(TaskEditColorButtonView, COLORS, {currentColor: color});
 
   return (
     `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
@@ -66,3 +61,26 @@ export const createTaskEditTemplate = (task = {}, colors) => {
     </article>`
   );
 };
+
+export default class TaskEdit {
+  constructor(task = BLANK_TASK) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

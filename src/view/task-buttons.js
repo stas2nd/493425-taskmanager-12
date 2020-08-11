@@ -1,4 +1,6 @@
-export const createTaskButtons = ({isArchive, isFavorite}) => {
+import {createElement} from "../utils.js";
+
+const createTaskButtons = ({isArchive, isFavorite}) => {
   const archiveActive = isArchive
     ? `card__btn--disabled`
     : ``;
@@ -19,3 +21,26 @@ export const createTaskButtons = ({isArchive, isFavorite}) => {
     </button>`
   );
 };
+
+export default class TaskButtons {
+  constructor(buttons) {
+    this._buttons = buttons;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskButtons(this._buttons);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

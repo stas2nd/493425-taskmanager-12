@@ -1,10 +1,10 @@
-import {isTaskRepeating, makeTemplateFromArray} from "../utils.js";
-import {createTaskEditRepeatingDayTemplate} from "./task-edit-repeating-day.js";
+import {isTaskRepeating, createElement, makeTemplateFromArrayClass} from "../utils.js";
+import TaskEditRepeatingDayView from "./task-edit-repeating-day.js";
 
-export const createTaskEditRepeatingTemplate = (repeating) => {
+const createTaskEditRepeatingTemplate = (repeating) => {
   let days;
   if (isTaskRepeating(repeating)) {
-    days = makeTemplateFromArray(createTaskEditRepeatingDayTemplate, Object.entries(repeating));
+    days = makeTemplateFromArrayClass(TaskEditRepeatingDayView, Object.entries(repeating));
   }
 
   return (
@@ -18,3 +18,26 @@ export const createTaskEditRepeatingTemplate = (repeating) => {
     </fieldset>` : ``}`
   );
 };
+
+export default class TaskEditRepeating {
+  constructor(repeat) {
+    this._repeat = repeat;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditRepeatingTemplate(this._repeat);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,6 +1,6 @@
-import {humanizeTaskDueDate} from "../utils.js";
+import {humanizeTaskDueDate, createElement} from "../utils.js";
 
-export const createTaskEditDateTemplate = (dueDate) => {
+const createTaskEditDateTemplate = (dueDate) => {
   return (
     `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${dueDate !== null ? `yes` : `no`}</span>
@@ -18,3 +18,26 @@ export const createTaskEditDateTemplate = (dueDate) => {
     </fieldset>` : ``}`
   );
 };
+
+export default class TaskEditDate {
+  constructor(date) {
+    this._date = date;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskEditDateTemplate(this._date);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
