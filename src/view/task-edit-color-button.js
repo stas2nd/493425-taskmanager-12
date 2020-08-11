@@ -1,16 +1,17 @@
-export const createTaskEditColorButton = ({id, value, state = ``}) => {
+export const createTaskEditColorButton = (color, rest) => {
+  const cur = rest.find((v) => v.currentColor);
   return (
     `<input
       type="radio"
-      id="${id}"
-      class="card__color-input card__color-input--${value} visually-hidden"
+      id="color-${color}"
+      class="card__color-input card__color-input--${color} visually-hidden"
       name="color"
-      value="${value}"
-      ${state}
+      value="${color}"
+      ${cur && cur.currentColor === color ? `checked` : ``}
     />
     <label
-      for="${id}"
-      class="card__color card__color--${value}"
-      >${value}</label>`
+      for="color-${color}"
+      class="card__color card__color--${color}"
+      >${color}</label>`
   );
 };

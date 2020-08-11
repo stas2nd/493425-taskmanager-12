@@ -1,17 +1,32 @@
-import {makeTemplateFromArray} from "../main.js";
-import {createTaskEditToggleButton} from "./task-edit-toggle-button.js";
-import {createTaskEditDayButton} from "./task-edit-day-button.js";
+import {createTaskEditRepeatingTemplate} from "./task-edit-repeating.js";
 import {createTaskEditColorButton} from "./task-edit-color-button.js";
+import {createTaskEditDateTemplate} from "./task-edit-date.js";
+import {makeTemplateFromArray} from "../utils.js";
+import {isTaskExpired, isTaskRepeating} from "../utils.js";
+import {NO_REPEATING} from "../const.js";
 
-export const createTaskEditTemplate = (dayButton, repeatButton, days, colors) => {
+export const createTaskEditTemplate = (task = {}, colors) => {
+  const {
+    color = `black`,
+    description = ``,
+    dueDate = null,
+    repeating = NO_REPEATING
+  } = task;
 
-  const dayToggle = createTaskEditToggleButton(dayButton);
-  const repeatToggle = createTaskEditToggleButton(repeatButton);
-  days = makeTemplateFromArray(days, createTaskEditDayButton);
-  colors = makeTemplateFromArray(colors, createTaskEditColorButton);
+  const deadlineClassName = isTaskExpired(dueDate)
+    ? `card--deadline`
+    : ``;
+
+  const repeatingClassName = isTaskRepeating(repeating)
+    ? `card--repeat`
+    : ``;
+
+  const date = createTaskEditDateTemplate(dueDate);
+  const repeatingOption = createTaskEditRepeatingTemplate(repeating);
+  colors = makeTemplateFromArray(createTaskEditColorButton, colors, {currentColor: color});
 
   return (
-    `<article class="card card--edit card--yellow card--repeat">
+    `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
       <form class="card__form" method="get">
         <div class="card__inner">
           <div class="card__color-bar">
@@ -25,30 +40,14 @@ export const createTaskEditTemplate = (dayButton, repeatButton, days, colors) =>
                 class="card__text"
                 placeholder="Start typing your text here..."
                 name="text"
-              >This is example of task edit. You can set date and chose repeating days and color.</textarea>
+              >${description}</textarea>
             </label>
           </div>
           <div class="card__settings">
             <div class="card__details">
               <div class="card__dates">
-                ${dayToggle}
-                <fieldset class="card__date-deadline">
-                  <label class="card__input-deadline-wrap">
-                    <input
-                      class="card__date"
-                      type="text"
-                      placeholder=""
-                      name="date"
-                      value="23 September"
-                    />
-                  </label>
-                </fieldset>
-                ${repeatToggle}
-                <fieldset class="card__repeat-days">
-                  <div class="card__repeat-days-inner">
-                    ${days}
-                  </div>
-                </fieldset>
+                ${date}
+                ${repeatingOption}
               </div>
             </div>
             <div class="card__colors-inner">
