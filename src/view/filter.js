@@ -1,9 +1,9 @@
-import {makeTemplateFromArray} from "../utils.js";
-import {createFilterItem} from "./filter-item.js";
+import {makeTemplateFromArrayClass} from "../utils.js";
+import FilterItemView from "./filter-item.js";
 import {createElement} from "../utils.js";
 
 const createFilterTemplate = (filters) => {
-  filters = makeTemplateFromArray(createFilterItem, filters, {index: 0});
+  filters = makeTemplateFromArrayClass(FilterItemView, filters, {index: 0});
   return (
     `<section class="main__filter filter container">
       ${filters}
