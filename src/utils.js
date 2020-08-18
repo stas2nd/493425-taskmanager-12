@@ -1,13 +1,34 @@
 import {COLORS} from "./const.js";
 
+export const render = (container, element, isAfterBegin = false) => {
+  if (isAfterBegin) {
+    container.prepend(element);
+  } else {
+    container.append(element);
+  }
+};
+
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 export const makeTemplateFromArray = (func, array, ...rest) => {
   return array ? array.reduce((accumulator, currentValue, index) => {
     return accumulator + func(currentValue, [...rest, {arrayIndex: index}]);
   }, ``) : ``;
 };
 
-export const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+export const makeTemplateFromArrayClass = (CL, array, ...rest) => {
+  return array ? array.reduce((accumulator, currentValue, index) => {
+    return accumulator + new CL(currentValue, [...rest, {arrayIndex: index}]).getTemplate();
+  }, ``) : ``;
 };
 
 export const getRandomInteger = (a = 0, b = 1) => {
