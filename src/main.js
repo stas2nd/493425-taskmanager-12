@@ -1,4 +1,4 @@
-import {TASK_COUNT, TASK_COUNT_PER_STEP, RENDER_POSITION} from "./const.js";
+import {TASK_COUNT, TASK_COUNT_PER_STEP} from "./const.js";
 import {render} from "./utils.js";
 import SiteMenuView from "./view/site-menu.js";
 import BoardView from "./view/board.js";
@@ -14,11 +14,12 @@ import {generateFilters} from "./mock/filters.js";
 
 const tasks = new Array(TASK_COUNT).fill().map(generateTask);
 const filters = generateFilters(tasks);
+let counter = 0;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-const renderTask = (taskListElement, task) => {
+const renderTask = (taskListElement, task, count) => {
   const taskComponent = new TaskView(task);
   let taskEditComponent;
   let taskEditForm;
@@ -40,7 +41,7 @@ const renderTask = (taskListElement, task) => {
   };
 
   const replaceCardToForm = () => {
-    taskEditComponent = new TaskEditView(task);
+    taskEditComponent = new TaskEditView(task, count);
     taskEditForm = taskEditComponent.getElement().querySelector(`form`);
     taskEditForm.addEventListener(`submit`, onSubmitForm);
     taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
@@ -59,39 +60,45 @@ const renderTask = (taskListElement, task) => {
     replaceCardToForm();
   });
 
-  render(taskListElement, taskComponent.getElement(), RENDER_POSITION.BEFOREEND);
+  render(taskListElement, taskComponent.getElement());
 };
 
 const renderBoard = (boardContainer, boardTasks) => {
   const boardComponent = new BoardView();
   const taskListComponent = new TaskListView();
 
-  render(boardContainer, boardComponent.getElement(), RENDER_POSITION.BEFOREEND);
-  render(boardComponent.getElement(), taskListComponent.getElement(), RENDER_POSITION.BEFOREEND);
+  render(boardContainer, boardComponent.getElement());
+  render(boardComponent.getElement(), taskListComponent.getElement());
 
   if (boardTasks.every((task) => task.isArchive)) {
-    render(boardComponent.getElement(), new NoTaskView().getElement(), RENDER_POSITION.AFTERBEGIN);
+    render(boardComponent.getElement(), new NoTaskView().getElement(), true);
     return;
   }
 
-  render(boardComponent.getElement(), new SortingView().getElement(), RENDER_POSITION.AFTERBEGIN);
+  render(boardComponent.getElement(), new SortingView().getElement(), true);
 
   boardTasks
     .slice(0, Math.min(tasks.length, TASK_COUNT_PER_STEP))
-    .forEach((boardTask) => renderTask(taskListComponent.getElement(), boardTask));
+    .forEach((boardTask) => {
+      renderTask(taskListComponent.getElement(), boardTask, counter);
+      counter += 1;
+    });
 
   if (boardTasks.length > TASK_COUNT_PER_STEP) {
     let renderedTaskCount = TASK_COUNT_PER_STEP;
 
     const loadMoreButtonComponent = new LoadMoreButtonView();
 
-    render(boardComponent.getElement(), loadMoreButtonComponent.getElement(), RENDER_POSITION.BEFOREEND);
+    render(boardComponent.getElement(), loadMoreButtonComponent.getElement());
 
     loadMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
       boardTasks
         .slice(renderedTaskCount, renderedTaskCount + TASK_COUNT_PER_STEP)
-        .forEach((boardTask) => renderTask(taskListComponent.getElement(), boardTask));
+        .forEach((boardTask) => {
+          renderTask(taskListComponent.getElement(), boardTask, counter);
+          counter += 1;
+        });
 
       renderedTaskCount += TASK_COUNT_PER_STEP;
 
@@ -103,7 +110,7 @@ const renderBoard = (boardContainer, boardTasks) => {
   }
 };
 
-render(siteHeaderElement, new SiteMenuView().getElement(), RENDER_POSITION.BEFOREEND);
-render(siteMainElement, new FilterView(filters).getElement(), RENDER_POSITION.BEFOREEND);
+render(siteHeaderElement, new SiteMenuView().getElement());
+render(siteMainElement, new FilterView(filters).getElement());
 
 renderBoard(siteMainElement, tasks);

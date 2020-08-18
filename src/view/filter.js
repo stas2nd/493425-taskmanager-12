@@ -2,23 +2,18 @@ import {makeTemplateFromArrayClass} from "../utils.js";
 import FilterItemView from "./filter-item.js";
 import {createElement} from "../utils.js";
 
-const createFilterTemplate = (filters) => {
-  filters = makeTemplateFromArrayClass(FilterItemView, filters, {index: 0});
-  return (
-    `<section class="main__filter filter container">
-      ${filters}
-    </section>`
-  );
-};
-
 export default class Filter {
   constructor(filters) {
-    this._filters = filters;
+    this._filters = makeTemplateFromArrayClass(FilterItemView, filters, {index: 0});
     this._element = null;
   }
 
   getTemplate() {
-    return createFilterTemplate(this._filters);
+    return (
+      `<section class="main__filter filter container">
+        ${this._filters}
+      </section>`
+    );
   }
 
   getElement() {

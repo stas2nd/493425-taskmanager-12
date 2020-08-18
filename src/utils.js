@@ -1,13 +1,10 @@
-import {COLORS, RENDER_POSITION} from "./const.js";
+import {COLORS} from "./const.js";
 
-export const render = (container, element, place) => {
-  switch (place) {
-    case RENDER_POSITION.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RENDER_POSITION.BEFOREEND:
-      container.append(element);
-      break;
+export const render = (container, element, isAfterBegin = false) => {
+  if (isAfterBegin) {
+    container.prepend(element);
+  } else {
+    container.append(element);
   }
 };
 

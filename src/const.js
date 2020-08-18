@@ -23,7 +23,3 @@ export const BLANK_TASK = {
   isArchive: false,
   isFavorite: false
 };
-export const RENDER_POSITION = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};

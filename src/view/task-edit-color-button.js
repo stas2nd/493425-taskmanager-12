@@ -1,18 +1,19 @@
 import {createElement} from "../utils.js";
 
 const createTaskEditColorButton = (color, rest) => {
-  const cur = rest.find((v) => v.currentColor);
+  const curColor = rest.find((v) => v.currentColor);
+  const curId = rest.find((v) => v.currentId !== undefined);
   return (
     `<input
       type="radio"
-      id="color-${color}"
+      id="color${curId ? `-` + curId.currentId : ``}-${color}"
       class="card__color-input card__color-input--${color} visually-hidden"
       name="color"
       value="${color}"
-      ${cur && cur.currentColor === color ? `checked` : ``}
+      ${curColor && curColor.currentColor === color ? `checked` : ``}
     />
     <label
-      for="color-${color}"
+      for="color${curId ? `-` + curId.currentId : ``}-${color}"
       class="card__color card__color--${color}"
       >${color}</label>`
   );
