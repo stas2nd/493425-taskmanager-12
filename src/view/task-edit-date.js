@@ -1,9 +1,10 @@
-import {humanizeTaskDueDate, createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
+import {humanizeTaskDueDate} from "../utils/task.js";
 
-export default class TaskEditDate {
+export default class TaskEditDate extends AbstractView {
   constructor(date) {
+    super();
     this._date = date;
-    this._element = null;
   }
 
   getTemplate() {
@@ -23,17 +24,5 @@ export default class TaskEditDate {
         </label>
       </fieldset>` : ``}`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,7 +1,8 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class TaskButtons {
+export default class TaskButtons extends AbstractView {
   constructor(buttons) {
+    super();
     this._buttons = buttons;
     this._archiveActive = this._buttons.isArchive
       ? `card__btn--disabled`
@@ -9,8 +10,6 @@ export default class TaskButtons {
     this._favoriteActive = this._buttons.isFavorite
       ? `card__btn--disabled`
       : ``;
-
-    this._element = null;
   }
 
   getTemplate() {
@@ -25,17 +24,5 @@ export default class TaskButtons {
         favorites
       </button>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
