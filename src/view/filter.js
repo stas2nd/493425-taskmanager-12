@@ -1,11 +1,10 @@
-import {makeTemplateFromArrayClass} from "../utils.js";
 import FilterItemView from "./filter-item.js";
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class Filter {
+export default class Filter extends AbstractView {
   constructor(filters) {
-    this._filters = makeTemplateFromArrayClass(FilterItemView, filters, {index: 0});
-    this._element = null;
+    super();
+    this._filters = this._makeTemplateFromArrayClass(FilterItemView, filters, {index: 0});
   }
 
   getTemplate() {
@@ -14,17 +13,5 @@ export default class Filter {
         ${this._filters}
       </section>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,6 +1,6 @@
 import {DESCRIPTIONS, NO_REPEATING} from "../const.js";
-import {getRandomInteger} from "../utils.js";
-import {getRandomColor} from "../utils.js";
+import {getRandomInteger} from "../utils/common.js";
+import {getRandomColor} from "../utils/task.js";
 
 const generateDescription = () => {
   return DESCRIPTIONS[getRandomInteger(0, DESCRIPTIONS.length - 1)];

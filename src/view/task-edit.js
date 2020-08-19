@@ -1,12 +1,13 @@
 import TaskEditRepeatingView from "./task-edit-repeating.js";
 import TaskEditColorButtonView from "./task-edit-color-button.js";
 import TaskEditDateView from "./task-edit-date.js";
-import {makeTemplateFromArrayClass} from "../utils.js";
-import {isTaskExpired, isTaskRepeating, createElement} from "../utils.js";
+import {isTaskExpired, isTaskRepeating} from "../utils/task.js";
 import {BLANK_TASK, COLORS} from "../const.js";
+import AbstractView from "./abstract.js";
 
-export default class TaskEdit {
+export default class TaskEdit extends AbstractView {
   constructor(task = BLANK_TASK, count) {
+    super();
     this._task = task;
     this._count = count;
 
@@ -20,9 +21,9 @@ export default class TaskEdit {
 
     this._date = new TaskEditDateView(this._task.dueDate).getTemplate();
     this._repeatingOption = new TaskEditRepeatingView(this._task.repeating, {currentId: count}).getTemplate();
-    this._colors = makeTemplateFromArrayClass(TaskEditColorButtonView, COLORS, {currentColor: this._task.color, currentId: this._count});
+    this._colors = this._makeTemplateFromArrayClass(TaskEditColorButtonView, COLORS, {currentColor: this._task.color, currentId: this._count});
 
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
@@ -68,15 +69,21 @@ export default class TaskEdit {
     );
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  removeFormSubmitHandler() {
+    if (this._callback.formSubmit) {
+      this.getElement().querySelector(`form`).removeEventListener(`submit`, this._formSubmitHandler);
+      delete this._callback.formSubmit;
     }
-
-    return this._element;
   }
 
-  removeElement() {
-    this._element = null;
-  }
 }

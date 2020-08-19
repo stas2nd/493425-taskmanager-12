@@ -1,11 +1,11 @@
 
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class TaskEditRepeatingDay {
+export default class TaskEditRepeatingDay extends AbstractView {
   constructor(day, rest) {
+    super();
     [this._day, this._repeat] = day;
     this._currentId = rest.find((v) => v.currentId !== undefined);
-    this._element = null;
   }
 
   getTemplate() {
@@ -22,17 +22,5 @@ export default class TaskEditRepeatingDay {
         >${this._day}</label
       >`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

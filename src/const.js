@@ -23,3 +23,9 @@ export const BLANK_TASK = {
   isArchive: false,
   isFavorite: false
 };
+
+export const SortType = {
+  DEFAULT: `default`,
+  DATE_DOWN: `date-down`,
+  DATE_UP: `date-up`
+};

@@ -1,13 +1,14 @@
-import {isTaskRepeating, createElement, makeTemplateFromArrayClass} from "../utils.js";
+import AbstractView from "./abstract.js";
+import {isTaskRepeating} from "../utils/task.js";
 import TaskEditRepeatingDayView from "./task-edit-repeating-day.js";
 
-export default class TaskEditRepeating {
+export default class TaskEditRepeating extends AbstractView {
   constructor(repeat, id) {
+    super();
     this._repeat = repeat;
     this._currentId = id;
     this._days = isTaskRepeating(this._repeat) ?
-      makeTemplateFromArrayClass(TaskEditRepeatingDayView, Object.entries(this._repeat), this._currentId) : ``;
-    this._element = null;
+      this._makeTemplateFromArrayClass(TaskEditRepeatingDayView, Object.entries(this._repeat), this._currentId) : ``;
   }
 
   getTemplate() {
@@ -21,17 +22,5 @@ export default class TaskEditRepeating {
         </div>
       </fieldset>` : ``}`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

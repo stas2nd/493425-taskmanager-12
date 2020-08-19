@@ -1,11 +1,11 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class FilterItem {
+export default class FilterItem extends AbstractView {
   constructor(filter, rest) {
+    super();
     this._filter = filter;
     this._arrayIndex = rest.find((v) => v.arrayIndex !== undefined).arrayIndex;
     this._index = rest.find((v) => v.index !== undefined).index;
-    this._element = null;
   }
 
   getTemplate() {
@@ -21,17 +21,5 @@ export default class FilterItem {
       <label for="filter__${this._filter.name}" class="filter__label">
       ${this._filter.name} <span class="filter__${this._filter.name}-count">${this._filter.count}</span></label>`
     ) : ``;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
