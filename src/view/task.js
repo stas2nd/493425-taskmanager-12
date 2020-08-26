@@ -1,5 +1,5 @@
 import TaskButtonsView from "./task-buttons.js";
-import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate} from "../utils/task.js";
+import {isTaskExpired, isTaskRepeating, formatTaskDueDate} from "../utils/task.js";
 import AbstractView from "./abstract.js";
 
 export default class Task extends AbstractView {
@@ -8,9 +8,7 @@ export default class Task extends AbstractView {
     this._task = task;
     this._buttons = new TaskButtonsView({isArchive: this._task.isArchive, isFavorite: this._task.isFavorite}).getTemplate();
 
-    this._date = this._task.dueDate !== null
-      ? humanizeTaskDueDate(this._task.dueDate)
-      : ``;
+    this._date = formatTaskDueDate(this._task.dueDate);
     this._deadlineClassName = isTaskExpired(this._task.dueDate)
       ? `card--deadline`
       : ``;
@@ -19,6 +17,8 @@ export default class Task extends AbstractView {
       : ``;
 
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._archiveClickHandler = this._archiveClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -54,6 +54,16 @@ export default class Task extends AbstractView {
     );
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _archiveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.archiveClick();
+  }
+
   _editClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
@@ -62,6 +72,16 @@ export default class Task extends AbstractView {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._editClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setArchiveClickHandler(callback) {
+    this._callback.archiveClick = callback;
+    this.getElement().querySelector(`.card__btn--archive`).addEventListener(`click`, this._archiveClickHandler);
   }
 
 }
