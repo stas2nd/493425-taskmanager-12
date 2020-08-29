@@ -1,3 +1,4 @@
+import moment from "moment";
 import {COLORS} from "../const.js";
 import {getRandomInteger} from "./common.js";
 
@@ -40,8 +41,8 @@ export const isTaskRepeating = (repeating) => {
   return Object.values(repeating).some(Boolean);
 };
 
-export const humanizeTaskDueDate = (dueDate) => {
-  return dueDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`});
+export const formatTaskDueDate = (dueDate) => {
+  return dueDate instanceof Date ? moment(dueDate).format(`D MMMM`) : ``;
 };
 
 export const sortTaskUp = (taskA, taskB) => {
