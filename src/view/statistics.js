@@ -153,7 +153,7 @@ export default class Statistics extends SmartView {
 
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
 
-    this._setCharts();
+    setTimeout(() => this._setCharts());
     this._setDatepicker();
   }
 
