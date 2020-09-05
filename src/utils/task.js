@@ -2,13 +2,6 @@ import moment from "moment";
 import {COLORS} from "../const.js";
 import {getRandomInteger} from "./common.js";
 
-const getCurrentDate = () => {
-  const currentDate = new Date();
-  currentDate.setHours(23, 59, 59, 999);
-
-  return new Date(currentDate);
-};
-
 const getWeightForNullDate = (dateA, dateB) => {
   if (dateA === null && dateB === null) {
     return 0;
@@ -25,16 +18,23 @@ const getWeightForNullDate = (dateA, dateB) => {
   return null;
 };
 
+export const getCurrentDate = () => {
+  const currentDate = new Date();
+  currentDate.setHours(23, 59, 59, 999);
+
+  return new Date(currentDate);
+};
+
 export const getRandomColor = () => {
   return COLORS[getRandomInteger(0, COLORS.length - 1)];
 };
 
 export const isTaskExpired = (dueDate) => {
-  return dueDate && getCurrentDate().getTime() > dueDate.getTime();
+  return dueDate && moment(getCurrentDate()).isAfter(dueDate, `day`);
 };
 
 export const isTaskExpiringToday = (dueDate) => {
-  return dueDate && getCurrentDate().getTime() === dueDate.getTime();
+  return dueDate && moment(dueDate).isSame(getCurrentDate(), `day`);
 };
 
 export const isTaskRepeating = (repeating) => {
@@ -63,4 +63,8 @@ export const sortTaskDown = (taskA, taskB) => {
   }
 
   return taskB.dueDate.getTime() - taskA.dueDate.getTime();
+};
+
+export const isDatesEqual = (dateA, dateB) => {
+  return (dateA === null && dateB === null) || moment(dateA).isSame(dateB, `day`);
 };

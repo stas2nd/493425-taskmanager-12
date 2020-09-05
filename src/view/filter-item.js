@@ -4,8 +4,7 @@ export default class FilterItem extends AbstractView {
   constructor(filter, rest) {
     super();
     this._filter = filter;
-    this._arrayIndex = rest.find((v) => v.arrayIndex !== undefined).arrayIndex;
-    this._index = rest.find((v) => v.index !== undefined).index;
+    this._currentFilterType = rest.find((v) => v.type !== undefined).type;
   }
 
   getTemplate() {
@@ -16,7 +15,8 @@ export default class FilterItem extends AbstractView {
         class="filter__input visually-hidden"
         name="filter"
         ${this._filter.count === 0 ? `disabled` : ``}
-        ${this._arrayIndex === this._index ? `checked` : ``}
+        ${this._filter.type === this._currentFilterType ? `checked` : ``}
+        value="${this._filter.type}"
       />
       <label for="filter__${this._filter.name}" class="filter__label">
       ${this._filter.name} <span class="filter__${this._filter.name}-count">${this._filter.count}</span></label>`

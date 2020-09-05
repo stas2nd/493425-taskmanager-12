@@ -1,6 +1,8 @@
 import TaskView from "../view/task.js";
 import TaskEditView from "../view/task-edit.js";
 import {render, replace, remove} from "../utils/render.js";
+import {UserAction, UpdateType} from "../const.js";
+import {isTaskRepeating, isDatesEqual} from "../utils/task.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -23,6 +25,7 @@ export default class Task {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._closeEditForm = this._closeEditForm.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(task) {
@@ -65,6 +68,7 @@ export default class Task {
   _replaceCardToForm() {
     this._taskEditComponent = new TaskEditView(this._task);
     this._taskEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._taskEditComponent.setDeleteClickHandler(this._handleDeleteClick);
     replace(this._taskEditComponent, this._taskComponent);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
@@ -74,6 +78,7 @@ export default class Task {
   _replaceFormToCard() {
     replace(this._taskComponent, this._taskEditComponent);
     this._taskEditComponent.removeFormSubmitHandler(this._handleFormSubmit);
+    this._taskEditComponent.removeDeleteClickHandler(this._handleDeleteClick);
     remove(this._taskEditComponent);
     this._mode = Mode.DEFAULT;
   }
@@ -91,6 +96,8 @@ export default class Task {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_TASK,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._task,
@@ -103,6 +110,8 @@ export default class Task {
 
   _handleArchiveClick() {
     this._changeData(
+        UserAction.UPDATE_TASK,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._task,
@@ -113,9 +122,25 @@ export default class Task {
     );
   }
 
-  _handleFormSubmit(task) {
-    this._changeData(task);
+  _handleFormSubmit(update) {
+    const isMinorUpdate =
+      !isDatesEqual(this._task.dueDate, update.dueDate) ||
+      isTaskRepeating(this._task.repeating) !== isTaskRepeating(update.repeating);
+
+    this._changeData(
+        UserAction.UPDATE_TASK,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        update
+    );
     this._closeEditForm();
+  }
+
+  _handleDeleteClick(task) {
+    this._changeData(
+        UserAction.DELETE_TASK,
+        UpdateType.MINOR,
+        task
+    );
   }
 
   _closeEditForm() {
